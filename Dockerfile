@@ -1,16 +1,16 @@
 # 1단계: Gradle 빌드
-FROM gradle:jdk17-jammy AS build
+FROM gradle:jdk21-jammy AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 
-# gradlew 실행 권한 추가 (먼저)
+# gradlew 실행 권한 추가
 RUN chmod +x gradlew
 
 # 빌드 실행
 RUN ./gradlew clean bootJar
 
 # 2단계: 실행용 JDK 이미지
-FROM eclipse-temurin:17-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy
 COPY --from=build /home/gradle/src/build/libs/javaproject05-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
