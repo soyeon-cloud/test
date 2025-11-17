@@ -1,0 +1,299 @@
+:root {
+  --bg: #fff5f8;          /* 배경계열 밝은 핑크 */
+    --panel: #ffffff;       /* 카드/패널 안쪽 배경 (하얀 종이 느낌) */
+    --panel-2: #fff9fb;     /* 버튼/서브패널 살짝 다른 화이트 */
+    --border: #a4baf6;      /* 분홍+회색 계열 보더 */
+    --text: #000000;        /* 기본 글자 어두운 회색 */
+    --muted: #000000;       /* 보조 텍스트, 설명 텍스트 */
+    --accent: #7e93ff;      /* 핑크 포인트 (버튼 강조, 링크 등) */
+    --warn: #ffffff;        /* 경고나 하이라이트(노랑) */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: #E9f4f9;
+    color: var(--text);
+    font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Malgun Gothic;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+/* 기본 버튼 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn.small {
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
+.btn.inline {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.btn.alt {
+    background: transparent;
+}
+
+.select,
+.color {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 8px;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.grow {
+    flex: 1;
+}
+
+.toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.app {
+    display: grid;
+    grid-template-rows: 60px 1fr;
+    min-height: 100vh;
+}
+
+/* 상단 헤더 */
+header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background:#c4d9e9;
+    backdrop-filter: saturate(160%) blur(10px);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.logo-badge {
+    width: 150px;
+    height: 26px;
+    border-radius: 7px;
+    /* background: linear-gradient(135deg, var(--accent), #bfb9db); */
+    background-color: white;
+    display: grid;
+    place-items: center;
+    color: #443d3d;
+    font-weight: 900;
+}
+
+.h-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* 메인 영역 분할 */
+.split {
+    display: grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 12px;
+    padding: 12px;
+}
+
+/* 좌우 패널 */
+.pane {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(16, 20, 30, .9));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 60vh;
+}
+
+/* 상단 도구바 */
+.viewer .viewer-toolbar,
+.notes .notes-toolbar {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    gap: 8px;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* 드롭존 */
+.dropzone {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+    background: #ffffff;
+}
+
+.placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: var(--muted);
+    z-index:
+    pointer-events  none;
+    /* 클릭 방해 방지 */
+    transition: opacity .3s;
+    opacity: 1;
+}
+
+.dropzone:not(:has(#placeholder)) .placeholder {
+    display: none;
+    opacity: 0;
+}
+
+.placeholder .btn {
+    pointer-events: auto;
+}
+
+/* 실제 표시 영역 */
+.stage {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+}
+
+#img {
+    display: block;
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    max-width: none;
+    max-height: none;
+}
+
+/* PDF도 스크롤 허용 */
+#pdf {
+    display: none;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* 필기 캔버스 */
+#ink {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+    pointer-events: none;
+}
+
+.dropzone.hover {
+    outline: 2px dashed var(--accent);
+    outline-offset: -6px;
+}
+
+/* 오른쪽 노트 영역 */
+.notes-body {
+    display: grid;
+    grid-template-rows: 1fr;
+    flex:1;
+    min-height: 0;
+}
+
+#note {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: var(--panel);
+    border: 1px ;
+    color: var(--text);
+    padding: 12px;
+    border-radius: 0 0 14px 14px;
+}
+
+.preview {
+    display: none;
+    padding: 14px;
+    overflow: auto;
+}
+
+.preview h1,
+.preview h2 {
+    margin: .6em 0 .3em;
+}
+
+.preview pre {
+    background: #0e1320;
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 8px;
+    overflow: auto;
+}
+
+.preview code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+/* 패널 리사이즈 구분선 */
+.gutter {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(100% - 10px);
+    width: 10px;
+    cursor: col-resize;
+}
+
+.no-select {
+    user-select: none;
+}
+
+
+@media (max-width: 1100px) {
+    .split {
+        grid-template-columns: 1fr;
+    }
+}
+
+header button {
+  background-color: #ffffff;
+  border: none;
+  color: rgb(58, 51, 51);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+}

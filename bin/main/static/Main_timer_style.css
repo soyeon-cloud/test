@@ -1,0 +1,130 @@
+.timer-section
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+.timer-section {
+    width: 100%;
+    max-width: 100%;  
+    height: auto;       
+    box-sizing: border-box;
+    overflow-x: auto;     
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #5d89a9;
+    flex-shrink: 0;       
+}
+.timer-section button:hover {
+    background-color: #5d89a9; 
+    color: white;              
+    border-color: #5d89a9;     
+}
+.timer-section
+        .container {
+            display: flex;
+            flex-direction: column; 
+            gap: 30px;
+            padding: 20px;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .timer-section,
+        .stopwatch-section {
+            background: white;
+            max-width: 100%; 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+.timer-section
+        .display {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 40px 0;
+            font-family: monospace;
+        }
+.timer-section
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;    
+        }
+.timer-section
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            border: 2px #5d89a9; 
+            font-size: 2em solid;
+            background-color: #f0f0f0; 
+            color: #333;     
+        }
+.timer-section
+        button:hover {
+            opacity: 0.8;
+        }
+.timer-section
+        .timer-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+.timer-section
+        .timer-input input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+.timer-section
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+.timer-section
+        .lap-times {
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+            text-align: left;
+            width: 100%;
+        }
+.timer-section
+        .lap-time {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+@media (max-width: 600px) {
+    .timer-section .controls
+    .timer-section .timer-input {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .timer-section .timer-input {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .timer-section .display {
+        font-size: 2em; 
+    }
+}
+
+.timer-section canvas {
+    width: 100% !important;
+    height: auto; 
+    max-height: 250px; 
+}

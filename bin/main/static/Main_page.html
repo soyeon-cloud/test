@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "Main_Css.css" >
+    <link rel = "stylesheet" href = "Main_timer_style.css" >
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 헤더 -->
+        <header class="top-header">
+            <div class="logo">웹 이름</div>
+            <!-- <div class="Main_timer">하루 공부 타이머</div> -->
+            <div class="profile" onclick="location.href='login_page.html'">개인 정보</div>
+        </header>
+        <nav class="link-nav">
+            <a href="file_.html"> 필기 </a>
+            <a href="Dash.html">  게시판 </a>
+            <a href="brainstorm.html"> 브레인스토밍</a>
+        </nav>
+    <!-- 메인 3분할 레이아웃 -->
+        <main class="dashboard">
+            <!-- 1번 : 달력 -->
+            <section class="panel calendar-panel">
+                <h2>달력</h2>
+                <div id="calendar"></div>
+            </section>
+
+            <!-- 2번 : 공부량 데이터 (placeholder) -->
+            <section class="panel stats-panel">
+                <div class="stats-header">
+                    <h2>공부 기록</h2>
+                    <div class="stats-tabs">
+                        <button class="stats-tab active" data-target="timer">타이머</button>
+                        <button class="stats-tab" data-target="chart">통계</button>
+                    </div>
+                </div>
+                <div class="stats-content">
+                <!-- 타이머 UI -->
+                <div id="stats-timer"class="stats-section active">
+                    <div class="timer-section stopwatch-section">
+                        <h3>스터디 타이머</h3>
+                        <div class="display" id="stopwatch-display">00:00:00</div>
+                        <div class="controls">
+                            <button class="start" id="stopwatch-start">시작</button>
+                        <button class="stop" id="stopwatch-stop">정지</button>
+                        <button class="reset" id="stopwatch-reset">리셋</button>
+                        <button class="start" id="stopwatch-lap">저장</button>
+                    </div>
+                <div class="lap-times" id="lap-times"></div></div>
+            </div>
+            <!-- 통계(그래프) UI -->
+            <div id="stats-chart" class="stats-section">
+                <div class="timer-section">
+                    <canvas id="studyChart"></canvas>
+                </div>
+            </div>
+            </div>
+            </section>
+
+            <!-- 3번 : 할 일 리스트 -->
+            <section class="panel todo-panel">
+                <h2>할 일 리스트</h2>
+
+                <ul id="todo-list" class="todo-list">
+                    <!-- 할 일 항목들이 여기에 들어감 -->
+                </ul>
+
+                <div class="todo-input-row">
+                    <input id="todo-input" placeholder="할 일을 입력하세요">
+                    <button id="add-todo">추가</button>
+                </div>
+            </section>
+        </main>
+
+    </div>
+    <script src="Main_Calender.js"></script>
+
+
+    <!-- 타이머/그래프 토글 js -->
+    <script>
+    // 탭 전환 기능
+    document.querySelectorAll(".stats-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+
+            // 버튼 active 처리
+            document.querySelectorAll(".stats-tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            // 화면 전환
+            document.querySelectorAll(".stats-section").forEach(s => s.classList.remove("active"));
+            document.getElementById(`stats-${tab.dataset.target}`).classList.add("active");
+        });
+    });
+    </script>
+    <script>
+    //타이머 클래스
+    class Stopwatch {
+        constructor(display, lapTimesContainer) {
+            this.display = display;
+            this.lapTimesContainer = lapTimesContainer;
+            this.interval = null;
+            this.startTime = 0;
+            this.elapsedTime = 0;
+            this.isRunning = false;
+            this.lapTimes = [];
+        }
+        start() {
+            if (this.isRunning) return;
+            this.isRunning = true;
+            this.startTime = Date.now() - this.elapsedTime;
+            this.interval = setInterval(() => this.updateDisplay(), 10);
+        }
+        stop() {
+            if (!this.isRunning) return;
+            clearInterval(this.interval);
+            this.elapsedTime = Date.now() - this.startTime;
+            this.isRunning = false;
+        }
+        reset() {
+            this.stop();
+            this.elapsedTime = 0;
+            this.updateDisplay();
+            this.lapTimes = [];
+            this.lapTimesContainer.innerHTML = '';
+        }
+        lap() {
+            if (!this.isRunning) return;
+            const lapTime = this.formatTime(this.elapsedTime);
+            this.lapTimes.push(lapTime);
+            // 화면에 표시
+            const lapElement = document.createElement('div');
+            lapElement.className = 'lap-time';
+            lapElement.textContent = `랩 ${this.lapTimes.length}: ${lapTime}`;
+            this.lapTimesContainer.insertBefore(lapElement, this.lapTimesContainer.firstChild);
+
+            // 백엔드 추가: 서버로 저장 요청
+        fetch("/api/study-time", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                timestamp: new Date().toISOString(),
+                duration: lapTime
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log("저장 완료:", data))
+        .catch(err => console.error("저장 실패", err));
+        }
+        updateDisplay() {
+            const currentTime = this.isRunning ? Date.now() - this.startTime : this.elapsedTime;
+            this.display.textContent = this.formatTime(currentTime);
+        }
+        formatTime(ms) {
+            const h = Math.floor(ms / 3600000);
+            const m = Math.floor((ms % 3600000) / 60000);
+            const s = Math.floor((ms % 60000) / 1000);
+            return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+    }
+    // 스톱워치 초기화
+    const stopwatch = new Stopwatch(
+        document.getElementById('stopwatch-display'),
+        document.getElementById('lap-times')
+    );
+
+    document.getElementById('stopwatch-start').addEventListener('click', () => stopwatch.start());
+    document.getElementById('stopwatch-stop').addEventListener('click', () => stopwatch.stop());
+    document.getElementById('stopwatch-reset').addEventListener('click', () => stopwatch.reset());
+    document.getElementById('stopwatch-lap').addEventListener('click', () => stopwatch.lap());
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('studyChart');
+        new Chart(ctx, {
+            type: 'line',
+                data: {
+                    labels: ['월','화','수','목','금','토','일'],
+                    datasets: [{
+                        label: '공부시간(시간)',
+                        data: [1,2,1,3,0,2,4]    //임시데이터
+                    }]
+                },
+        });
+    </script>
+</body>
+
+</html>

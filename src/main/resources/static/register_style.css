@@ -1,0 +1,139 @@
+@font-face {
+    font-family: 'HsJandari';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2510-2@1.0/HSJandari.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+body{
+    font-family: "Noto Sans KR", sans-serif;
+    margin:0;
+    padding:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background-color:rgb(238, 249, 253);
+}
+.wrapper{
+    background-color: white;
+    width: 400px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(40, 48, 121, 0.5);
+    padding: 30px 30px 40px 30px;
+}
+.wrapper h2{
+    font-size:30px;
+}
+.register_box{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:10px;
+    margin-bottom:17px;
+}
+.register_box input{
+    width: 180px;
+    height: 30px;
+    background: transparent;
+    border: 2px solid rgba(108, 119, 119, 0.3);
+    border-radius: 20px;
+    padding-left: 10px;
+    outline: none;
+}
+.back_btn{
+    width:90px;
+    height:45px;
+    background-color: rgb(177, 177, 177);
+    font-size:16px;
+    color:rgb(34, 29, 29);
+    border:none;
+    outline:none;
+    border-radius:18px;
+    margin-top:15px;
+    transition-duration:0.3s;
+    &:hover{
+        background-color: rgb(30, 60, 160)
+    }
+}
+.register_btn{
+    width:90px;
+    height:45px;
+    background-color: rgb(177, 177, 177);
+    font-size:16px;
+    color:rgb(34, 29, 29);
+    border:none;
+    outline:none;
+    border-radius:18px;
+    margin-top:15px;
+    transition-duration:0.3s;
+    &:hover{
+        background-color: rgb(46, 69, 117)
+    }
+}
+/*----------------------*/
+.register_box label {
+    width: 120px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 14px;
+}
+.email-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.email-container input {
+    width:110px;
+}
+.email-container select {
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 2px 6px;
+}
+/*버튼 디자인*/
+.back_btn,.register_btn {
+  width: 90px;
+  height: 35px;
+  background-color: rgb(183, 210, 228);
+  font-size: 15px;
+  color: rgb(34, 29, 29);
+  border: none;
+  border-radius: 18px;
+  margin: 10px 5px;
+  transition: 0.3s;
+}
+.back_btn:hover,.register_btn:hover {
+  background-color: rgb(47, 94, 197);
+  color: white;
+}
+.form-under {
+    display: block;
+    margin-top: 10px;
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+}
+.shorter-label {
+  width: 120px;
+}
+/*체크박스*/
+.password-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.show-pw-label {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.show-pw-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    margin: 0 4px 0 0;
+}

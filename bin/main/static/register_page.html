@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="" rel="stylesheet">
+    <link rel="stylesheet" href="register_style.css">
+    <title>Register page</title>
+</head>
+<body>
+    <div class="wrapper">
+        <!--<form method="post" action="register_check.php"> </form>-->
+        <form id="RegisterForm">
+            <br><h2>회원 가입</h2><br>
+            <div class="register_box">
+                <label for="nickname">닉네임</label>
+                <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" required>
+            </div>
+            <div class="register_box">
+                <div class="email-container">
+                    <label for="email">이메일</label>
+                    <input type="text" id="email" name="email" placeholder="이메일 입력" required>
+                    <select id="emailDomain">
+                        <option value="@naver.com">@naver.com</option>
+                        <option value="@gmail.com">@gmail.com</option>
+                        <option value="@daum.net">@daum.net</option>
+                        <option value="">직접입력</option>
+                    </select>
+                </div>
+            </div>
+            <div class="register_box">
+                <div class="password-container">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" placeholder="비밀번호 입력" required>
+                    <label class="show-pw-label">
+                    <input type="checkbox" id="showPW"> 보기<br></label>
+                </div>
+            </div>
+            <div class="register_box">
+                <label for="passwordCheck"class="shorter-label">비밀번호 확인</label>
+                <input type="password" id="passwordCheck" placeholder="비밀번호 다시 입력" required><br>
+            </div><br>
+            <button type="button" class="back_btn" id="back" onclick="location.href='login_page.html'">뒤로가기</button>
+            <button type="submit" class="register_btn" id="register">가입하기</button>
+            <br><small class="form-under">문의 - StudyCollect24@naver.com</small>
+        </form>
+        <script>
+        const pwInput = document.getElementById('password');
+        const showCheckbox = document.getElementById('showPW');
+        showCheckbox.addEventListener('change', () => {
+            pwInput.type = showCheckbox.checked ? 'text' : 'password'; });
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>브레인스토밍 보드</title>
+    <link rel="stylesheet" href="brainstorm_style.css">
+    <style>
+/*  배경 */
+.modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.4); /* 팝업 뒤 배경 */
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 200;
+}
+.modal.hidden {
+  display: none;
+}
+.modal-content {
+  background: #ffffff;
+  padding: 25px 20px;
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #03396c;
+}
+.modal-content h3 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #03396c;
+}
+/* 팀 항목 */
+.team-item {
+  padding: 8px;
+  margin: 6px 0;
+  border: 1px solid #dff3ff;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #bad7f5;
+  transition: all 0.2s ease;
+}
+.team-item:hover {
+  background: #dee8ec;
+  transform: scale(1.03);
+}
+/* 팀 추가 입력창 */
+.team-input {
+  width: 80%;
+  padding: 6px 10px;
+  margin-top: 12px;
+  border: 1px solid #bad7f5;
+  border-radius: 6px;
+  outline: none;
+}
+.team-input:focus {
+  border-color: #00bfff;
+  /* box-shadow: 0 0 5px #00bfff; */
+}
+/* 팀 추가 버튼 */
+.team-add-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #87cefa;
+  color: rgb(31, 28, 28);
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.team-add-btn:hover {
+  background-color: #92a2fd;
+  transform: scale(1.05);
+}
+  </style>
+</head>
+<body>
+  <header>
+    <!-- 홈으로 이동, 메인페이지 링크 추가 -->
+    <button onclick="location.href='Main_page.html'">Home</button>
+    <h1>브레인스토밍 <span id="currentTeamName" style="font-size:1rem; color:#555; margin-left:10px;"></span></h1>
+    <div class="user-area">
+      <button id="userBtn">팀 선택</button>
+    <div id="userMenu" class="user-menu hidden">
+      <div class="menu-item" id="teamSelectBtn">팀 선택</div>
+      <div class="menu-item">팀원 추가</div>
+    </div>
+  </div>
+  </header>
+  <div class="input-area">
+    <input type="text" id="ideaInput" placeholder="아이디어를 입력하세요..." />
+    <select id="categorySelect">
+      <option value="기본">카테고리 선택</option>
+      <option value="아이디어">아이디어</option>
+      <option value="문제점">문제점</option>
+      <option value="해결방안">해결방안</option>
+      <option value="기타">기타</option>
+      <option value="__add__">+ 새 카테고리 추가</option>
+    </select>
+    <!-- 색상 선택 -->
+  <select id="colorSelect">
+    <option value="" selected>색상 선택</option>
+    <option value="color-yellow" style="background:#fff3bf;"></option>
+    <option value="color-blue" style="background:#a5d8ff;"></option>
+    <option value="color-green" style="background:#b2f2bb;"></option>
+    <option value="color-purple" style="background:#d0bfff;"></option>
+    <option value="color-pink" style="background:#fcc2d7;"></option>
+    <option value="color-teal" style="background:#96f2d7;"></option>
+  </select>
+  <button id="addIdeaBtn">추가</button>
+  </div>
+  <!-- 카테고리 선택 -->
+  <div class="category-tabs" id="categoryTabs">
+    <div class="tab active" data-category="아이디어">아이디어</div>
+    <div class="tab" data-category="문제점">문제점</div>
+    <div class="tab" data-category="해결방안">해결방안</div>
+    <div class="tab" data-category="기타">기타</div>
+  </div>
+  <div class="board-container" id="board"></div>
+  <!-- 팀 선택 모달 -->
+  <div id="teamModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>팀 목록</h3>
+      <div id="teamList"></div>
+      <input id="newTeamName" class="team-input" placeholder="새 팀 이름 입력" />
+      <button id="addTeamBtn" class="team-add-btn">팀 추가</button>
+    </div>
+  </div>
+  <!-- ----------------------------------------------script------------------------------------------------------->
+  <script>
+  const board = document.getElementById("board");
+  const addBtn = document.getElementById("addIdeaBtn");
+  const input = document.getElementById("ideaInput");
+  const categorySelect = document.getElementById("categorySelect");
+  const tabsContainer = document.getElementById("categoryTabs");
+  let currentCategory = "아이디어";
+  let currentTeam = localStorage.getItem("currentTeam") || "사용자";
+    //사용자 드롭다운
+    const userBtn = document.getElementById("userBtn");
+    const userMenu = document.getElementById("userMenu");
+    userBtn.addEventListener("click", () => {
+      userMenu.classList.toggle("hidden");
+    });
+    window.addEventListener("click", (e) => {
+      if (!userMenu.contains(e.target) && e.target !== userBtn) {
+        userMenu.classList.add("hidden");
+      }
+    });
+
+    //팀 모달
+    const teamSelectBtn = document.getElementById("teamSelectBtn");
+    const teamModal = document.getElementById("teamModal");
+    const teamList = document.getElementById("teamList");
+    const addTeamBtn = document.getElementById("addTeamBtn");
+    const newTeamName = document.getElementById("newTeamName");
+
+    teamSelectBtn.addEventListener("click", () => {
+      userMenu.classList.add("hidden");
+      openTeamModal();
+    });
+
+    function openTeamModal() {
+      teamModal.classList.remove("hidden");
+      renderTeamList();
+    }
+
+    function renderTeamList() {
+      const teams = JSON.parse(localStorage.getItem("teams") || '["사용자"]');
+      teamList.innerHTML = "";
+      teams.forEach(team => {
+        const div = document.createElement("div");
+        div.textContent = team;
+        div.className = "team-item";
+        div.onclick = () => {
+          currentTeam = team;
+          localStorage.setItem("currentTeam", team);
+          teamModal.classList.add("hidden");
+          userBtn.textContent = team; //버튼에 팀 이름 표시
+          document.getElementById("currentTeamName").textContent = `(${team})`;
+          renderIdeas();
+          alert(`현재 팀: ${team}`);
+        };
+        teamList.appendChild(div);
+      });
+    }
+
+    addTeamBtn.addEventListener("click", () => {
+      const name = newTeamName.value.trim();
+      if (!name) return alert("팀 이름을 입력하세요.");
+      const teams = JSON.parse(localStorage.getItem("teams") || '["사용자"]');
+      if (teams.includes(name)) return alert("이미 존재하는 팀입니다.");
+      teams.push(name);
+      localStorage.setItem("teams", JSON.stringify(teams));
+      newTeamName.value = "";
+      renderTeamList();
+    });
+
+    teamModal.addEventListener("click", (e) => {
+      if (e.target === teamModal) teamModal.classList.add("hidden");
+    });
+  let selectedColor = "color-yellow"; // 기본 색상
+  // 색상 선택 시 select 배경색 변경
+  const colorSelect = document.getElementById("colorSelect");
+  colorSelect.addEventListener("change", () => {
+    const selected = colorSelect.options[colorSelect.selectedIndex];
+    const bg = selected.style.background || "#fff";
+    colorSelect.style.background = bg;
+  });
+  // 탭 클릭 시 카테고리 변경
+  function refreshTabListeners() {
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentCategory = tab.dataset.category;
+        renderIdeas();
+      };
+    });
+  } refreshTabListeners();
+  // 새 카테고리 추가
+  categorySelect.addEventListener("change", () => {
+    if (categorySelect.value === "__add__") {
+      const newCat = prompt("새 카테고리 이름을 입력하세요:");
+      if (!newCat) { categorySelect.value = currentCategory; return; }
+      // select에 추가
+      const option = document.createElement("option");
+      option.value = newCat;
+      option.textContent = newCat;
+      categorySelect.insertBefore(option, categorySelect.lastElementChild);
+      categorySelect.value = newCat;
+      // 탭에도 추가
+      const tab = document.createElement("div");
+      tab.className = "tab";
+      tab.dataset.category = newCat;
+      tab.textContent = newCat;
+      tabsContainer.appendChild(tab);
+      refreshTabListeners();
+    }}
+  );
+  //아이디어 추가
+  function getIdeas() {
+    return JSON.parse(localStorage.getItem(`ideas_${currentTeam}`) || "[]");
+  }
+  function saveIdeas(ideas) {
+      localStorage.setItem(`ideas_${currentTeam}`, JSON.stringify(ideas));
+    }
+    addBtn.addEventListener("click", addIdea);
+  input.addEventListener("keypress", e => { if (e.key === "Enter") addIdea(); });
+  function addIdea() {
+    const text = input.value.trim();
+    const cat = categorySelect.value;
+    let color = document.getElementById("colorSelect").value;
+    if (!text) return alert("아이디어를 입력하세요.");
+    if (cat === "기본") return alert("카테고리를 선택하세요."); //카테고리 미선택 방지
+    if (!color) color = "color-yellow";//색상 미선택 시 자동으로 노란색
+    
+    const ideas = getIdeas();
+    ideas.push({ text, category: cat, votes: 0, posX: 100 + Math.random()*600, posY: 100 + Math.random()*400, color});
+    localStorage.setItem("ideas", JSON.stringify(ideas));
+    localStorage.setItem(`ideas_${currentTeam}`, JSON.stringify(ideas)); //키 수정
+    input.value = "";
+    renderIdeas();
+  }
+  function renderIdeas() {
+    board.innerHTML = "";
+    const ideas = getIdeas().filter(i => i.category === currentCategory);
+    
+    ideas.forEach((idea, index) => {
+      const noteColor = idea.color || "color-yellow";
+      const note = document.createElement("div");
+      note.className = `sticky-note ${noteColor}`;
+      note.style.top = idea.posY + "px";
+      note.style.left = idea.posX + "px";
+      note.innerHTML = `<div>${idea.text}</div>
+      <div class="category-tag">#${idea.category}</div>
+      <div class="recommend-tab">추천 ${idea.votes}</div>
+      <div class="delete-btn">X</div>`;
+      // 추천
+      note.querySelector(".recommend-tab").addEventListener("click", e => {
+        const list = getIdeas();
+          const idx = list.findIndex(i => i.text === idea.text);
+          if (idx > -1) {
+            list[idx].votes++;
+            saveIdeas(list);
+            renderIdeas();
+        }});
+        // 삭제 기능
+        note.querySelector(".delete-btn").addEventListener("click", () => {
+        const list = getIdeas().filter(i => i.text !== idea.text);
+          saveIdeas(list);
+          renderIdeas();
+        });
+        // 우클릭 시 삭제버튼 토글
+        note.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          note.classList.toggle("show-delete");
+        });
+        board.appendChild(note);
+        // 드래그 기능
+        makeDraggable(note, idea);
+        board.appendChild(note);
+      });
+      // 포스트잇 드래그 기능
+      function makeDraggable(el, idea) {
+        let isDragging = false;
+        let offsetX, offsetY;
+        el.addEventListener("mousedown", (e) => {
+          if (e.target.classList.contains("recommend-tab") || e.target.classList.contains("delete-btn")) return;
+          isDragging = true;
+          offsetX = e.clientX - el.offsetLeft;
+          offsetY = e.clientY - el.offsetTop;
+          el.style.zIndex = 1000;
+        });
+        window.addEventListener("mousemove", (e) => {
+          if (!isDragging) return;
+          el.style.left = `${e.clientX - offsetX}px`;
+          el.style.top = `${e.clientY - offsetY}px`;
+        });
+        window.addEventListener("mouseup", (e) => {
+          if (isDragging) {
+            isDragging = false;
+            el.style.zIndex = 1;
+            // 포스트잇 현재 위치 저장
+            const all = getIdeas();
+            const idx = all.findIndex(i => i.text === idea.text && i.category === idea.category);
+            if (idx > -1) {
+              all[idx].posX = el.offsetLeft;
+              all[idx].posY = el.offsetTop;
+              localStorage.setItem(`ideas_${currentTeam}`, JSON.stringify(all));
+            }
+          }
+        });
+      }
+    }
+    document.getElementById("currentTeamName").textContent = `(${currentTeam})`;
+    userBtn.textContent = currentTeam;
+    // 첫 렌더링
+    renderIdeas();
+    </script>
+</body>
+</html>

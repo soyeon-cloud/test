@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>웹 페이지 작성 중</title>
+  <link rel="stylesheet" href="file_viewstyle.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo"><div class="logo-badge">파일보기 및 필기 공간</div> </div>
+      <div class="h-actions">
+        <button id="btnPick" type="button" class="btn">파일 열기</button>       
+        <input id="fileInput" type="file" accept="application/pdf,image/*" hidden />
+        <button id="btnClear" type="button" class="btn">지우기</button>
+        <button id="btnExport" type="button" class="btn">이미지 저장</button>
+      </div>
+    </header>
+
+    <div class="split" id="split">
+      <!-- 왼쪽 공간 파일 열기-->
+      <section class="pane viewer" id="viewerPane">
+        <div class="viewer-toolbar">
+          <span class="muted">파일뷰어</span>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+          <div class="placeholder" id="placeholder">
+            <p>여기로 파일을 끌어다 놓으세요.</p>
+            <p class="muted"></p>
+          </div>
+
+          <div class="stage" id="stage">
+            <!-- 이미지 저장을 위한 공간-->
+            <img id="img"/>
+            <canvas id="ink"></canvas>
+            <object id="pdf" type="application/pdf" data="" aria-label="PDF preview"></object>
+          </div>
+        </div>
+      </section>
+
+      <!-- 오른쪽 노트 필기 하는 공간 -> 하지만 아직 미완성  나중에 완성 하면 백엔드 쪽으로 넘길 게욤ㅎㅎ-->
+      <section class="pane notes">
+        <div class="notes-toolbar">
+          <span class="muted">필기</span>
+          <div class="grow"></div>
+          <button class="btn small" id="btnCopy" type="button">복사</button>
+          <button class="btn small" id="btnSave" type="button">저장</button>
+          <label class="toggle"><input type="checkbox" id="previewToggle" /> 필기가리기</label>
+        </div>
+        <div class="notes-body">
+          <textarea id="note" placeholder="여기에 필기하세요. (간단 마크다운 지원)"></textarea>
+          <div id="preview" class="preview"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
