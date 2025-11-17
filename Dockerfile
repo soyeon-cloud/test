@@ -1,12 +1,11 @@
-# 1단계: 실행용 JDK 이미지
+# 1단계: Gradle 빌드
+FROM gradle:jdk17-jammy AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN ./gradlew clean bootJar
+
+# 2단계: 실행용 JDK 이미지
 FROM eclipse-temurin:17-jdk-jammy
-WORKDIR /app
+COPY --from=build /home/gradle/src/build/libs/javaproject05-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-# 로컬에서 빌드한 JAR 파일 COPY
-COPY build/libs/javaproject05-0.0.1-SNAPSHOT.jar app.jar
-
-# 환경 변수 설정 가능 (DB 연결 등)
-ENV JAVA_OPTS=""
-
-# 실행 명령
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
