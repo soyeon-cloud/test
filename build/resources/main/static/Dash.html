@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Dash.css">
+</head>
+<body>
+    <body>
+<header class="topbar">
+    <div class="left">
+        <button class="btn-home">Home</button>
+    </div>
+
+    <div class="center">
+        <h1 class="title">게시판</h1>
+    </div>
+
+    <div class="right">
+        <button class="btn-profile">사용자</button>
+
+    </div>
+</header>
+
+  <div class="layout">
+
+    <!-- 왼쪽 카테고리 메뉴 -->
+    <nav class="sidebar">
+      <ul>
+        <li><a href="?category=notice">공지</a></li>
+        <li><a href="?category=free">자유</a></li>
+        <li><a href="?category=question">질문</a></li>
+        <li><a href="?category=tips">팁</a></li>
+      </ul>
+    </nav>
+
+    <!-- 오른쪽 메인 -->
+    <main class="board">
+
+      <!-- 게시판 제목 + 글쓰기 -->
+      <div class="board-header">
+        <h2>공지 - 게시판</h2>
+        <a href="Dash_write.html" class="write-btn">글쓰기</a>
+      </div>
+
+      <!-- 글 리스트 -->
+      <ul class="post-list">
+        <!-- JS로 채울 예정 -->
+        <li class="post-item">
+          <span class="title">제목입니다</span>
+          <span class="author">작성자</span>
+          <span class="category">카테고리</span>
+        </li>
+      </ul>
+
+    </main>
+  </div>
+</body>
+
+    
+</body>
+</html>

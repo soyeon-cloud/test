@@ -1,0 +1,192 @@
+/* board.css */
+/* 1) 기본 변수/리셋 */
+:root{
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #ffffff;
+  --border: #c7dbff;
+  --text: #000000;
+  --muted: #9fb0cf;
+  --accent: #6ea8fe;
+  --accent-2: #9ad0ff;
+  --danger: #ffffff;
+  --radius: 14px;
+  --shadow: 0 10px 24px rgba(11, 153, 255, 0.25);
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  height:100%;
+  margin:0;
+  color:var(--text);
+  background: linear-gradient(180deg, #E9EDFC, var(--bg));
+  font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Malgun Gothic, sans-serif;
+}
+
+/* 2) 상단 헤더 */
+.topbar {
+    width: 100%;
+    height: 70px;
+    background: #BCD8F0; /* 상단바 색 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.topbar .left,
+.topbar .center,
+.topbar .right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.topbar .center {
+    justify-content: center;
+}
+
+.topbar .left {
+    justify-content: flex-start;
+}
+
+.topbar .right {
+    justify-content: flex-end; /* 지금은 비어있음 */
+}
+
+/* 버튼 스타일 */
+.btn-home {
+    padding: 8px 18px;
+    background: white;
+    color: #1E2A33;
+    font-weight: 600;
+    border: 1px solid #AFC6D7;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* 3) 메인 레이아웃 */
+.layout{
+  display:flex; gap:18px;
+  max-width:1100px; margin:18px auto; padding:0 16px;
+}
+
+/* 좌측 사이드 */
+.sidebar{
+  width:200px; flex:0 0 200px;
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  padding:14px;
+  box-shadow: var(--shadow);
+  height: calc(100vh - 120px);
+  position: sticky; top:86px; overflow:auto;
+}
+.sidebar ul{ list-style:none; margin:0; padding:0; }
+.sidebar li{ margin:6px 0; }
+.sidebar a{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:8px;
+  padding:10px 12px; border-radius:10px;
+  color:var(--text); text-decoration:none;
+  border:1px solid transparent;
+  transition: .15s ease;
+}
+.sidebar a:hover{
+  background: var(--panel-2);
+  border-color: var(--border);
+}
+.sidebar a.active{
+  background: rgba(110,168,254,.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(110,168,254,.3) inset;
+}
+
+/* 우측 게시판 */
+.board{
+  flex:1;
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  padding:16px;
+  box-shadow: var(--shadow);
+  min-height: 70vh;
+}
+
+/* 게시판 상단: 제목 + 글쓰기 버튼 */
+.board-header{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:12px;
+}
+.board-header h2{
+  margin:0; font-size:18px; letter-spacing:.2px;
+}
+.write-btn{
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  cursor:pointer;
+  transition: .15s ease;
+}
+.write-btn:hover{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(110,168,254,.15) inset;
+}
+
+/* 글 리스트 */
+.post-list{
+  margin:0; padding:0; list-style:none;
+  display:flex; flex-direction:column; gap:10px;
+}
+.post-item{
+  display:grid;
+  grid-template-columns: 1fr 140px 110px;
+  gap:12px; align-items:center;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  background: var(--panel-2);
+  border-radius: 12px;
+  transition: .15s ease;
+}
+.post-item:hover{ transform: translateY(-1px); border-color: var(--accent); }
+.post-item .title{
+  font-weight:600; line-height:1.35;
+  overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+}
+.post-item .author{
+  color: var(--muted);
+  overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+}
+.post-item .meta{
+  display:flex; gap:8px; justify-content:flex-end; align-items:center;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 카테고리 배지 */
+.badge{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 8px; border-radius:999px;
+  border:1px solid var(--border); background: rgba(255,255,255,.03);
+  font-size:12px; color: var(--accent-2);
+}
+.badge.notice{ color:#ffd166; }
+.badge.question{ color:#9cffb5; }
+.badge.tips{ color:#b8a7ff; }
+.badge.free{ color:#a7c2ff; }
+
+/* 스크롤바(웹킷) */
+.sidebar::-webkit-scrollbar, .board::-webkit-scrollbar{
+  width:10px; height:10px;
+}
+.sidebar::-webkit-scrollbar-thumb, .board::-webkit-scrollbar-thumb{
+  background: #2a3245; border-radius:10px;
+  border:2px solid #151a26;
+}
+
+
+

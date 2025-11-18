@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>글쓰기</title>
+<style>
+  :root{
+    --bg:#E9EDFC;
+    --top:#BCD8F0;
+    --panel:#fff;
+    --border:#D4DFE6;
+    --ink:#1E2A33;
+    --muted:#667784;
+    --chip:#F5F9FC;
+    --accent:#C4D9E9;
+    --accent-ink:#0f2c44;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Malgun Gothic,sans-serif}
+
+  /* 상단바 */
+  .topbar{height:70px;background:var(--top);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .topbar .left,.topbar .center,.topbar .right{flex:1;display:flex;align-items:center}
+  .topbar .left{justify-content:flex-start}
+  .topbar .center{justify-content:center}
+  .topbar .right{justify-content:flex-end}
+  .btn-home{padding:8px 16px;border:1px solid #AFC6D7;background:#fff;border-radius:10px;cursor:pointer}
+  .title{margin:0;font-weight:800;font-size:20px}
+
+  /* 본문 컨테이너 */
+  .wrap{max-width:960px;margin:28px auto;padding:0 16px}
+  .card{background:var(--panel);border:2px solid var(--border);border-radius:16px;padding:18px 16px;box-shadow:0 4px 20px rgba(0,0,0,.04)}
+
+  .field{margin-bottom:16px}
+  .field label{display:block;font-weight:700;margin-bottom:6px}
+  input[type="text"],select,textarea{
+    width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--chip);font:inherit
+  }
+
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:720px){ .row{grid-template-columns:1fr} }
+
+  /* 탭 */
+  .tabs{display:flex;gap:8px;margin-bottom:6px}
+  .tab{padding:6px 12px;border:1px solid var(--border);border-radius:10px;background:var(--chip);cursor:pointer}
+  .tab.active{background:var(--accent);color:var(--accent-ink);font-weight:700}
+
+  /* 미리보기 */
+  .preview{border:1px solid var(--border);border-radius:10px;background:#fff;min-height:240px;padding:12px;overflow:auto}
+  .preview h1,.preview h2,.preview h3{margin:12px 0 6px}
+  .preview p,.preview ul,.preview ol{margin:8px 0}
+  .preview code{padding:2px 4px;border:1px solid #eef;background:#f8fafc;border-radius:4px}
+  .preview pre{padding:10px;border:1px solid #eef;background:#f8fafc;border-radius:8px;overflow:auto}
+  .preview blockquote{border-left:3px solid var(--accent);padding-left:8px;color:var(--muted)}
+
+  /* 하단 버튼 */
+  .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+  .btn{padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--chip);cursor:pointer}
+  .btn.primary{background:var(--accent)}
+  .hint{color:var(--muted);font-size:12px;margin-top:2px}
+
+  /* 파일칩 */
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{background:var(--chip);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="left">
+    <button class="btn-home" onclick="history.back()">↩︎</button>
+  </div>
+  <div class="center"><h1 class="title">글쓰기</h1></div>
+  <div class="right"></div>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <div class="row">
+      <div class="field">
+        <label for="category">카테고리</label>
+        <select id="category">
+          <option value="notice">공지사항</option>
+          <option value="qna">질문</option>
+          <option value="tips">후기/꿀팁</option>
+          <option value="free" selected>자유</option>
+          <option value="suggestion">건의</option>
+          <option value="team">팀원공간</option>
+        </select>
+        <div class="hint">팀원공간/공지 작성은 권한이 필요할 수 있어요.</div>
+      </div>
+      <div class="field">
+        <label for="title">제목</label>
+        <input id="title" type="text" maxlength="100" placeholder="제목을 입력하세요" />
+        <div class="hint"><span id="titleCount">0</span>/100</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>내용</label>
+      <div class="tabs">
+        <button class="tab active" data-tab="edit">에디터</button>
+        <button class="tab" data-tab="preview">미리보기</button>
+      </div>
+      <textarea id="content" rows="14" placeholder="내용을 입력하세요."></textarea>
+      <div id="preview" class="preview" hidden></div>
+      <div class="hint"><span id="bodyCount"></span> Ctrl+Enter: 등록</div>
+    </div>
+
+    <div class="field">
+      <label for="files">첨부 파일(선택)</label>
+      <input id="files" type="file" multiple />
+      <div id="fileChips" class="chips"></div>
+    </div>
+
+    <div class="actions">
+      <button id="saveDraft" class="btn">임시저장</button>
+      <button id="submit" class="btn primary">등록하기</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  // ===== 간단 마크다운 렌더러 (안전 escape + 기본 문법)
+  const escapeHtml = s => (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  function mdToHtml(md=''){
+    let s = escapeHtml(md);
+
+    // 코드블록/인라인코드
+    s = s.replace(/```([\s\S]*?)```/g, (_,code)=>`<pre><code>${code}</code></pre>`);
+    s = s.replace(/`([^`]+)`/g, (_,code)=>`<code>${code}</code>`);
+
+    // 헤딩
+    s = s.replace(/^(###)\s+(.+)$/gm,'<h3>$2</h3>')
+         .replace(/^(##)\s+(.+)$/gm,'<h2>$2</h2>')
+         .replace(/^(#)\s+(.+)$/gm,'<h1>$2</h1>');
+
+    // 강조
+    s = s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+         .replace(/\*([^*]+)\*/g,'<em>$1</em>');
+
+    // 인용
+    s = s.replace(/^\>\s?(.+)$/gm,'<blockquote>$1</blockquote>');
+
+    // 목록
+    const lines = s.split('\n'); let out=[], ul=false, ol=false;
+    const flush=()=>{ if(ul){out.push('</ul>');ul=false;} if(ol){out.push('</ol>');ol=false;}};
+    for(const line of lines){
+      if (/^\s*[-*]\s+/.test(line)){ if(!ul){flush();out.push('<ul>');ul=true;} out.push('<li>'+line.replace(/^\s*[-*]\s+/, '')+'</li>'); }
+      else if (/^\s*\d+\.\s+/.test(line)){ if(!ol){flush();out.push('<ol>');ol=true;} out.push('<li>'+line.replace(/^\s*\d+\.\s+/, '')+'</li>'); }
+      else { flush(); out.push(line.trim()===''?'':`<p>${line}</p>`); }
+    }
+    s = out.join('\n');
+
+    // 링크
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return s;
+  }
+
+  // ===== 엘리먼트
+  const $ = s=>document.querySelector(s);
+  const titleEl = $('#title');
+  const contentEl = $('#content');
+  const previewEl = $('#preview');
+  const titleCountEl = $('#titleCount');
+  const bodyCountEl = $('#bodyCount');
+  const filesEl = $('#files');
+  const fileChips = $('#fileChips');
+  const DRAFT_KEY = 'writer_draft_v1';
+
+  // 카운터
+  function updateCounts(){
+    titleCountEl.textContent = (titleEl.value||'').length;
+    bodyCountEl.textContent = (contentEl.value||'').length;
+  }
+  titleEl.addEventListener('input', updateCounts);
+  contentEl.addEventListener('input', ()=>{ updateCounts(); if(!previewEl.hidden) renderPreview(); });
+
+  // 탭 전환
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.tab;
+      if(mode==='edit'){ contentEl.hidden=false; previewEl.hidden=true; contentEl.focus(); }
+      else{ renderPreview(); contentEl.hidden=true; previewEl.hidden=false; }
+    });
+  });
+  function renderPreview(){ previewEl.innerHTML = mdToHtml(contentEl.value); }
+
+  // 파일칩
+  filesEl.addEventListener('change', ()=>{
+    fileChips.innerHTML = [...filesEl.files].map(f=>`<span class="chip">${f.name}</span>`).join('');
+  });
+
+  // 임시저장/복원
+  function saveDraft(){
+    const data = {
+      title: titleEl.value,
+      category: $('#category').value,
+      content: contentEl.value
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  }
+  function restoreDraft(){
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if(!raw) return;
+    try{
+      const d = JSON.parse(raw);
+      titleEl.value = d.title||'';
+      $('#category').value = d.category||'free';
+      contentEl.value = d.content||'';
+      updateCounts();
+    }catch{}
+  }
+  $('#saveDraft').addEventListener('click', ()=>{ saveDraft(); alert('임시저장 완료'); });
+
+  // 단축키: Ctrl+S 저장, Ctrl+Enter 등록
+  window.addEventListener('keydown',(e)=>{
+    if(e.ctrlKey && (e.key==='s' || e.key==='S')){ e.preventDefault(); saveDraft(); alert('임시저장 완료'); }
+    if(e.ctrlKey && e.key==='Enter'){ e.preventDefault(); submitPost(); }
+  });
+
+  // 등록(백엔드 연결 지점)
+  async function submitPost(){
+    const title = titleEl.value.trim();
+    const category = $('#category').value;
+    const content = contentEl.value.trim();
+    if(!title) return alert('제목을 입력하세요.');
+    if(!content) return alert('내용을 입력하세요.');
+
+    // 서버에 보낼 페이로드 (필요하면 subject_id 매핑)
+    const payload = { title, category, content };
+
+    console.log('POST /api/posts', payload);
+    // 실제 저장 시:
+    // await fetch('/api/posts', {
+    //   method:'POST', headers:{'Content-Type':'application/json'},
+    //   body: JSON.stringify(payload), credentials:'include'
+    // });
+
+    localStorage.removeItem(DRAFT_KEY);
+    alert('등록 완료! (현재는 콘솔 출력만)');
+    // location.href = '/'; // 완료 후 이동할 경로가 있으면 사용
+  }
+  $('#submit').addEventListener('click', submitPost);
+
+  // 초기화
+  restoreDraft();
+  updateCounts();
+</script>
+</body>
+</html>

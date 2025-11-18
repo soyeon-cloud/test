@@ -1,0 +1,376 @@
+/* 리셋 + 전체 스타일 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, #fff, #ffeef2 60%);
+    font-family: "맑은 고딕", system-ui, sans-serif;
+    color: #2a2a2a;
+
+    margin : 0;
+    padding : 0;
+}
+
+/* 전체 박스 */
+.container {
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    margin: 0px ;
+
+    padding: 20px;
+
+    border-radius: 15px;
+    background-color: rgba(255,255,255,0.6);
+    box-shadow: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 상단 헤더 */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.top-header > div {
+    border: 1.5px solid #5d89a9;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    background-color: rgba(255,255,255,0.8);
+    color: #1f3f56;
+    box-shadow: 0 4px 10px rgba(93, 137, 169, 0.12);
+}
+
+/* 메인 3분할 레이아웃 */
+.dashboard {
+    flex: 1;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; 
+    grid-template-rows: 1fr 1fr;     
+    grid-template-areas:
+        "cal todo"
+        "stats todo"; 
+    gap: 20px;
+    min-height: 0;
+}
+
+/* 공통 패널 UI */
+.panel {
+    border: 1.5px solid #5d89a9;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.8);
+    box-shadow: 0 6px 16px rgba(93, 137, 169, 0.12);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.panel h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f3f56;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(93,137,169,0.3);
+}
+
+
+.calendar-panel {
+    grid-area: cal;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#calendar {
+    flex : 1;
+    border: 1px solid #5d89a9;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #f8fbff;
+    font-size: 0.9rem;
+    color: #1f3f56;
+}
+
+
+.calendar-header,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #1f3f56;
+    margin-top: 8px;
+}
+
+.calendar-grid div {
+    padding: 6px 0;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.calendar-grid div:hover {
+    background-color: rgba(93,137,169,0.08);
+    cursor: pointer;
+}
+
+.calendar-grid .today {
+    background-color: #357dad1c;
+    border: 2px solid #079cff;
+    font-weight: 700;
+    color: #1f3f56;
+}
+
+
+.stats-panel {
+    grid-area: stats;
+}
+
+.placeholder {
+    flex: 1;
+    border: 1px solid #5d89a9;
+    border-radius: 8px;
+    background-color: #f8fbff;
+    color: #5d89a9;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.todo-panel {
+    grid-area: todo;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    border: 1.5px solid #5d89a9;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.8);
+    padding: 16px;
+}
+
+.todo-list {
+    flex: 1;             
+    min-height: 0;          
+    list-style: none;
+    margin: 0 0 12px 0;
+    padding: 12px;
+
+    border: 1px solid #5d89a9;
+    border-radius: 8px;
+    background-color: #f8fbff;
+    color: #1f3f56;
+    font-size: 1rem;
+
+    overflow-y: visible;
+    max-height: none;
+}
+
+
+.todo-panel h2 {
+    flex-shrink: 0;      
+    font-weight: 700;
+    color: #1f3f56;
+    margin-bottom: 12px;
+}
+
+.todo-list li {
+    background-color: #ffffff;
+    border: 1px solid rgba(93,137,169,0.4);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    color: #1f3f56;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.todo-input-row {
+    flex-shrink: 0; 
+    display: flex;
+    gap: 8px;
+}
+
+#todo-input {
+    flex: 1;
+    border-radius: 8px;
+    border: 1.5px solid #5d89a9;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    color: #1f3f56;
+    box-shadow: 0 4px 10px rgba(93, 137, 169, 0.08) inset;
+    flex-shrink: 0;
+}
+
+#add-todo {
+    background-color: #5d89a9;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(93, 137, 169, 0.3);
+    transition: background 0.2s;
+}
+#add-todo:hover {
+    background-color: #346079;
+}
+
+.link-nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    background: rgba(177, 29, 29, 0.7);
+    border: 1px solid #5d89a9;
+    border-radius: 10px;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(93, 137, 169, 0.15);
+    background: linear-gradient(to right, #ecf3f8, #d8e7f1);
+    border-color: #5e253a;
+    padding: 14px 0;
+    gap : 30%;
+}
+
+.link-nav a {
+    text-decoration: none;
+    color: #2a2a2a;
+    font-weight: 1000;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.link-nav a:hover {
+    color: #da094b;
+    transform: scale(1.1);
+}
+
+/* 추가 */
+#calendar {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.calendar-header,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr)); /* 화면 작아져도 칸 축소 */
+    gap: 4px;
+}
+/* 달력 셀 공통 크기 */
+.calendar-cell,
+.calendar-header > div {
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 6px;
+    box-sizing: border-box;
+    word-break: break-all;
+}
+ /* 추가 */
+ /* 탭 메뉴 */
+.stats-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stats-tab {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid #5d89a9;
+    background: #e6f0f7;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.stats-tab.active {
+    background: #5d89a9;
+    color: white;
+}
+
+/* 콘텐츠 영역 */
+.stats-section {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.stats-section.active {
+    display:block;
+}
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid rgba(93,137,169,0.3);
+    margin-bottom: 15px;
+}
+.stats-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.stats-tab {
+    padding: 6px 20px;
+    border: 1px solid #5d89a9;
+    background: #e6f0f7;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.stats-tab.active {
+    background: #5d89a9;
+    color: white;
+}
+.stats-panel h2 {
+    border-bottom: none !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* 통계그래프 */
+.stats-content {
+    max-height: 500px; 
+    overflow-y: auto; 
+}
+
+.timer-section {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #5d89a9;
+}
+
+.timer-section canvas {
+    width: 100% !important; 
+    height: 300px;   
+}
